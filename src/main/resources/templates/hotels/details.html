@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${hotel.name}">Hotel Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        .hotel-image {
+            height: 400px;
+            object-fit: cover;
+            width: 100%;
+            border-radius: 15px;
+        }
+        .room-card {
+            transition: transform 0.2s;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .amenity-badge {
+            margin-right: 5px;
+            margin-bottom: 5px;
+            border-radius: 20px;
+        }
+        .sticky-booking {
+            position: sticky;
+            top: 20px;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">🏨 HotelBooking</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/hotels">Hotels</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/search">Search</a>
+                </li>
+            </ul>
+            <div class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user"></i>
+                        <span th:if="${#authorization.expression('isAuthenticated()')}"
+                              th:text="${#authentication.principal.username}">User</span>
+                        <span th:unless="${#authorization.expression('isAuthenticated()')}">Account</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li th:if="${#authorization.expression('isAuthenticated()')}">
+                            <a class="dropdown-item" href="/user/dashboard">Dashboard</a>
+                            <a class="dropdown-item" href="/bookings/my-bookings">My Bookings</a>
+                            <a class="dropdown-item" href="/user/profile">Profile</a>
+                            <hr class="dropdown-divider">
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item">Logout</button>
+                            </form>
+                        </li>
+                        <li th:unless="${#authorization.expression('isAuthenticated()')}">
+                            <a class="dropdown-item" href="/login">Login</a>
+                            <a class="dropdown-item" href="/register">Register</a>
+                        </li>
+                    </ul>
+                </li>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Hotel Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/hotels">Hotels</a></li>
+                    <li class="breadcrumb-item active" th:text="${hotel.name}">Hotel Name</li>
+                </ol>
+            </nav>
+
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img th:src="${hotel.imageUrl}"
+                             th:alt="${hotel.name}"
+                             class="hotel-image"
+                             th:onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500'">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h1 class="card-title" th:text="${hotel.name}">Hotel Name</h1>
+                            <div class="mb-3">
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-star"></i>
+                                        <span th:text="${hotel.rating}">4.5</span>
+                                    </span>
+                                <span class="text-muted ms-2" th:text="${hotel.city}">City</span>
+                            </div>
+                            <p class="card-text" th:text="${hotel.description}">Hotel description goes here...</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span th:text="${hotel.address}">Hotel Address</span>
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Rooms -->
+    <div class="row">
+        <div class="col-lg-8">
+            <h3>Available Rooms</h3>
+            <div th:if="${hotel.rooms.empty}" class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No rooms available at this hotel.
+            </div>
+
+            <div th:each="room : ${hotel.rooms}" class="card room-card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5 class="card-title" th:text="${room.roomType}">Room Type</h5>
+                            <p class="card-text" th:text="${room.description}">Room description...</p>
+
+                            <!-- Amenities -->
+                            <div class="mb-3">
+                                    <span th:each="amenity : ${#strings.arraySplit(room.amenities, ',')}"
+                                          class="badge bg-primary amenity-badge"
+                                          th:text="${amenity}">Amenity</span>
+                            </div>
+
+                            <div class="room-features">
+                                <small class="text-muted">
+                                    <i class="fas fa-user-friends"></i>
+                                    Capacity: <span th:text="${room.capacity}">2</span> guests
+                                </small>
+                                <small class="text-muted ms-3">
+                                    <i class="fas fa-door-open"></i>
+                                    Available: <span th:text="${room.totalRooms}">5</span> rooms
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-end">
+                                <h4 class="text-success" th:text="'$' + ${room.price}">$199.99</h4>
+                                <small class="text-muted">per night</small>
+
+                                <!-- Book Now Button -->
+                                <button class="btn btn-primary mt-2 w-100 book-room-btn"
+                                        th:attr="data-room-id=${room.id},
+                                                 data-room-type=${room.roomType},
+                                                 data-room-price=${room.price},
+                                                 data-room-capacity=${room.capacity}">
+                                    <i class="fas fa-calendar-check"></i> Book Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Form Sidebar -->
+        <div class="col-lg-4">
+            <div class="card sticky-booking">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Book Your Stay</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/bookings/book}" method="post" id="bookingForm">
+                        <input type="hidden" name="roomId" id="selectedRoomId" required>
+
+                        <!-- Selected Room Info -->
+                        <div class="mb-3 p-3 bg-light rounded" id="roomSelectionInfo">
+                            <h6 class="text-muted">Please select a room first</h6>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="mb-3">
+                            <label for="checkInDate" class="form-label">Check-in Date</label>
+                            <input type="date" class="form-control" id="checkInDate" name="checkInDate" required
+                                   th:min="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="checkOutDate" class="form-label">Check-out Date</label>
+                            <input type="date" class="form-control" id="checkOutDate" name="checkOutDate" required>
+                        </div>
+
+                        <!-- Guests Selection (FIXED: More options) -->
+                        <div class="mb-3">
+                            <label for="numberOfGuests" class="form-label">Number of Guests</label>
+                            <select class="form-select" id="numberOfGuests" name="numberOfGuests" required>
+                                <option value="1">1 Guest</option>
+                                <option value="2" selected>2 Guests</option>
+                                <option value="3">3 Guests</option>
+                                <option value="4">4 Guests</option>
+                                <option value="5">5 Guests</option>
+                                <option value="6">6 Guests</option>
+                                <option value="7">7 Guests</option>
+                                <option value="8">8 Guests</option>
+                                <option value="9">9 Guests</option>
+                                <option value="10">10 Guests</option>
+                                <option value="11">11 Guests</option>
+                                <option value="12">12 Guests</option>
+                                <option value="13">13 Guests</option>
+                                <option value="14">14 Guests</option>
+                                <option value="15">15 Guests</option>
+                                <option value="16">16 Guests</option>
+                                <option value="17">17 Guests</option>
+                                <option value="18">18 Guests</option>
+                                <option value="19">19 Guests</option>
+                                <option value="20">20 Guests</option>
+                            </select>
+                        </div>
+
+                        <!-- Rooms Selection (FIXED: More options) -->
+                        <div class="mb-3">
+                            <label for="roomCount" class="form-label">Number of Rooms</label>
+                            <select class="form-select" id="roomCount" name="roomCount" required>
+                                <option value="1" selected>1 Room</option>
+                                <option value="2">2 Rooms</option>
+                                <option value="3">3 Rooms</option>
+                                <option value="4">4 Rooms</option>
+                                <option value="5">5 Rooms</option>
+                                <option value="6">6 Rooms</option>
+                                <option value="7">7 Rooms</option>
+                                <option value="8">8 Rooms</option>
+                                <option value="9">9 Rooms</option>
+                                <option value="10">10 Rooms</option>
+                            </select>
+                        </div>
+
+                        <!-- Special Requests -->
+                        <div class="mb-3">
+                            <label for="specialRequests" class="form-label">Special Requests</label>
+                            <textarea class="form-control" id="specialRequests" name="specialRequests"
+                                      rows="3" placeholder="Any special requirements..."></textarea>
+                        </div>
+
+                        <!-- Price Calculation -->
+                        <div class="mb-3 p-3 bg-light rounded" id="priceCalculation">
+                            <div class="d-flex justify-content-between">
+                                <span>Price per night:</span>
+                                <span id="pricePerNight">$0</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Nights:</span>
+                                <span id="nightsCount">0</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Rooms:</span>
+                                <span id="roomsCount">0</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between fw-bold">
+                                <span>Total:</span>
+                                <span id="totalAmount">$0</span>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-success w-100" id="bookButton" disabled>
+                            <i class="fas fa-credit-card"></i> Proceed to Booking
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let selectedRoom = null;
+        const bookButton = document.getElementById('bookButton');
+        const selectedRoomId = document.getElementById('selectedRoomId');
+        const roomSelectionInfo = document.getElementById('roomSelectionInfo');
+        const pricePerNight = document.getElementById('pricePerNight');
+        const totalAmount = document.getElementById('totalAmount');
+        const nightsCount = document.getElementById('nightsCount');
+        const roomsCount = document.getElementById('roomsCount');
+
+        // Room selection handling
+        document.querySelectorAll('.book-room-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                selectedRoom = {
+                    id: this.getAttribute('data-room-id'),
+                    type: this.getAttribute('data-room-type'),
+                    price: parseFloat(this.getAttribute('data-room-price')),
+                    capacity: parseInt(this.getAttribute('data-room-capacity'))
+                };
+
+                // Update form
+                selectedRoomId.value = selectedRoom.id;
+                roomSelectionInfo.innerHTML = `
+                    <h6 class="text-primary">${selectedRoom.type}</h6>
+                    <p class="mb-0 text-success">$${selectedRoom.price} per night</p>
+                    <small class="text-muted">Capacity: ${selectedRoom.capacity} guests</small>
+                `;
+                pricePerNight.textContent = `$${selectedRoom.price}`;
+
+                // Enable book button
+                bookButton.disabled = false;
+                bookButton.innerHTML = '<i class="fas fa-credit-card"></i> Proceed to Booking';
+
+                // Recalculate total
+                calculateTotal();
+            });
+        });
+
+        // Date change handlers
+        document.getElementById('checkInDate').addEventListener('change', calculateTotal);
+        document.getElementById('checkOutDate').addEventListener('change', calculateTotal);
+        document.getElementById('roomCount').addEventListener('change', calculateTotal);
+        document.getElementById('numberOfGuests').addEventListener('change', validateGuests);
+
+        // Calculate total amount
+        function calculateTotal() {
+            if (!selectedRoom) return;
+
+            const checkInDate = new Date(document.getElementById('checkInDate').value);
+            const checkOutDate = new Date(document.getElementById('checkOutDate').value);
+            const roomCount = parseInt(document.getElementById('roomCount').value);
+
+            if (checkInDate && checkOutDate && checkInDate < checkOutDate) {
+                const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+                const total = selectedRoom.price * nights * roomCount;
+
+                nightsCount.textContent = nights;
+                roomsCount.textContent = roomCount;
+                totalAmount.textContent = `$${total.toFixed(2)}`;
+            } else {
+                nightsCount.textContent = '0';
+                totalAmount.textContent = '$0';
+            }
+        }
+
+        // Validate guests against room capacity
+        function validateGuests() {
+            if (!selectedRoom) return;
+
+            const numberOfGuests = parseInt(document.getElementById('numberOfGuests').value);
+            const roomCount = parseInt(document.getElementById('roomCount').value);
+            const totalCapacity = selectedRoom.capacity * roomCount;
+
+            if (numberOfGuests > totalCapacity) {
+                alert(`Warning: You have selected ${numberOfGuests} guests but the selected rooms can only accommodate ${totalCapacity} guests. Please book more rooms or reduce the number of guests.`);
+            }
+        }
+
+        // Form validation
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            if (!selectedRoom) {
+                e.preventDefault();
+                alert('Please select a room first');
+                return false;
+            }
+
+            const checkInDate = new Date(document.getElementById('checkInDate').value);
+            const checkOutDate = new Date(document.getElementById('checkOutDate').value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (!checkInDate || !checkOutDate) {
+                e.preventDefault();
+                alert('Please select both check-in and check-out dates');
+                return false;
+            }
+
+            if (checkInDate < today) {
+                e.preventDefault();
+                alert('Check-in date cannot be in the past');
+                return false;
+            }
+
+            if (checkInDate >= checkOutDate) {
+                e.preventDefault();
+                alert('Check-out date must be after check-in date');
+                return false;
+            }
+
+            // Validate guests capacity
+            const numberOfGuests = parseInt(document.getElementById('numberOfGuests').value);
+            const roomCount = parseInt(document.getElementById('roomCount').value);
+            const totalCapacity = selectedRoom.capacity * roomCount;
+
+            if (numberOfGuests > totalCapacity) {
+                e.preventDefault();
+                alert(`You have selected ${numberOfGuests} guests but the selected rooms can only accommodate ${totalCapacity} guests. Please book more rooms or reduce the number of guests.`);
+                return false;
+            }
+
+            // Show loading
+            bookButton.disabled = true;
+            bookButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        });
+
+        // Set default dates
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('checkInDate').value = tomorrow.toISOString().split('T')[0];
+
+        const dayAfterTomorrow = new Date();
+        dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+        document.getElementById('checkOutDate').value = dayAfterTomorrow.toISOString().split('T')[0];
+    });
+</script>
+</body>
+</html>

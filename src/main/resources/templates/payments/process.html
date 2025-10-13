@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Hotel Booking System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        .payment-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+        .booking-summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            font-weight: 600;
+            padding: 12px 30px;
+            border-radius: 10px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .nav-pills .nav-link {
+            border-radius: 10px;
+            margin: 5px;
+            font-weight: 500;
+        }
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .security-notice {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">🏨 HotelBooking</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/hotels">Hotels</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/bookings/my-bookings">My Bookings</a>
+                </li>
+            </ul>
+            <div class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        👤 User
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card payment-card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">💳 Payment Details</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Error Messages -->
+                    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show">
+                        <strong>❌ Payment Error:</strong>
+                        <span th:if="${param.error == 'payment_failed'}">Payment processing failed. Please try again.</span>
+                        <span th:if="${param.error == 'cash_payment_failed'}">Cash payment setup failed. Please try again.</span>
+                        <span th:if="${param.error != 'payment_failed' and param.error != 'cash_payment_failed'}" th:text="${param.error}">Error message</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <!-- Success Messages -->
+                    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show">
+                        <strong>✅ Success:</strong> Payment processed successfully!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <!-- Booking Summary -->
+                    <div class="booking-summary mb-4">
+                        <h5>📋 Booking Summary</h5>
+                        <div class="card booking-summary-card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h5 class="card-title" th:text="${booking.room.hotel.name}">Grand Plaza Hotel</h5>
+                                        <p class="card-text mb-1">
+                                            <strong>🛏️ Room:</strong>
+                                            <span th:text="${booking.room.roomNumber} + ' - ' + ${booking.room.roomType}">101 - Deluxe King</span>
+                                        </p>
+                                        <p class="card-text mb-1">
+                                            <strong>📅 Dates:</strong>
+                                            <span th:text="${#temporals.format(booking.checkInDate, 'MMM dd, yyyy')} + ' - ' + ${#temporals.format(booking.checkOutDate, 'MMM dd, yyyy')}">Oct 11, 2025 - Oct 12, 2025</span>
+                                        </p>
+                                        <p class="card-text mb-0">
+                                            <strong>👥 Guests:</strong>
+                                            <span th:text="${booking.numberOfGuests} + ' guest' + (${booking.numberOfGuests} > 1 ? 's' : '')">2 guests</span>
+                                            <span th:if="${booking.roomCount > 1}"> •
+                                                <span th:text="${booking.roomCount} + ' room' + (${booking.roomCount} > 1 ? 's' : '')">1 room</span>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <h3 class="text-white mb-0" th:text="'$' + ${#numbers.formatDecimal(booking.totalAmount, 1, 2)}">$199.99</h3>
+                                        <small>Total Amount</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="payment-methods mb-4">
+                        <h5>💳 Select Payment Method</h5>
+
+                        <ul class="nav nav-pills mb-3" id="paymentMethods" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="card-tab" data-bs-toggle="pill" data-bs-target="#card" type="button" role="tab">
+                                    💳 Credit/Debit Card
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="cash-tab" data-bs-toggle="pill" data-bs-target="#cash" type="button" role="tab">
+                                    💵 Pay at Hotel
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="paymentMethodsContent">
+                            <!-- Card Payment -->
+                            <div class="tab-pane fade show active" id="card" role="tabpanel">
+                                <form th:action="@{/payments/process/online}" method="post" id="paymentForm">
+                                    <input type="hidden" name="bookingId" th:value="${booking.id}">
+
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">Card Type</label>
+                                        <div class="d-flex flex-wrap gap-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="visa" value="VISA" checked>
+                                                <label class="form-check-label" for="visa">
+                                                    <img src="https://img.icons8.com/color/48/000000/visa.png" alt="VISA" style="width: 40px; height: 25px;">
+                                                    VISA
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="mastercard" value="MasterCard">
+                                                <label class="form-check-label" for="mastercard">
+                                                    <img src="https://img.icons8.com/color/48/000000/mastercard.png" alt="MasterCard" style="width: 40px; height: 25px;">
+                                                    MasterCard
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="amex" value="Amex">
+                                                <label class="form-check-label" for="amex">
+                                                    <img src="https://img.icons8.com/color/48/000000/american-express.png" alt="Amex" style="width: 40px; height: 25px;">
+                                                    American Express
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="cardNumber" class="form-label fw-bold">Card Number</label>
+                                        <input type="text" class="form-control" id="cardNumber" name="cardNumber"
+                                               placeholder="1234 5678 9012 3456" maxlength="19"
+                                               pattern="[0-9\s]{13,19}" required
+                                               oninput="formatCardNumber(this)">
+                                        <div class="form-text">Enter 16-digit card number</div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="cardHolderName" class="form-label fw-bold">Cardholder Name</label>
+                                            <input type="text" class="form-control" id="cardHolderName" name="cardHolderName"
+                                                   placeholder="John Doe" required>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="expiryDate" class="form-label fw-bold">Expiry Date</label>
+                                            <input type="text" class="form-control" id="expiryDate" name="expiryDate"
+                                                   placeholder="MM/YY" maxlength="5" required
+                                                   oninput="formatExpiryDate(this)">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="cvv" class="form-label fw-bold">CVV</label>
+                                            <input type="text" class="form-control" id="cvv" name="cvv"
+                                                   placeholder="123" maxlength="3" required
+                                                   oninput="formatCVV(this)">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary btn-lg" id="payButton">
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" style="display: none;"></span>
+                                            💳 Pay Now - $<span th:text="${#numbers.formatDecimal(booking.totalAmount, 1, 2)}">199.99</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Cash Payment -->
+                            <div class="tab-pane fade" id="cash" role="tabpanel">
+                                <div class="alert alert-info">
+                                    <h6>💵 Pay at Hotel</h6>
+                                    <p>You can pay in cash when you arrive at the hotel. Your booking will be confirmed immediately.</p>
+                                    <div class="mt-3">
+                                        <p><strong>🏨 Check-in:</strong> <span th:text="${booking.room.hotel.name}">Grand Plaza Hotel</span></p>
+                                        <p><strong>📍 Address:</strong> <span th:text="${booking.room.hotel.address} + ', ' + ${booking.room.hotel.city}">123 Broadway, Manhattan, New York</span></p>
+                                        <p><strong>📞 Contact:</strong> Front Desk - (555) 123-4567</p>
+                                    </div>
+                                    <div class="mt-3 p-3 bg-light rounded">
+                                        <h6>📋 Check-in Instructions:</h6>
+                                        <ul class="mb-0">
+                                            <li>Bring a valid government-issued ID</li>
+                                            <li>Check-in time: 3:00 PM</li>
+                                            <li>Check-out time: 11:00 AM</li>
+                                            <li>Payment due upon arrival</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <form th:action="@{/payments/process/cash}" method="post" id="cashPaymentForm">
+                                    <input type="hidden" name="bookingId" th:value="${booking.id}">
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-outline-primary btn-lg" id="cashPayButton">
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" style="display: none;"></span>
+                                            ✅ Confirm Cash Payment
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Notice -->
+                    <div class="security-notice">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-shield-alt fa-2x text-success me-3"></i>
+                            <div>
+                                <h6 class="mb-1">🔒 Secure Payment</h6>
+                                <small class="text-muted mb-0">
+                                    Your payment information is encrypted and secure. We do not store your full card details.
+                                    All transactions are protected by SSL encryption.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="text-center mt-4">
+                        <a th:href="@{/bookings/my-bookings}" class="text-decoration-none me-3">
+                            ← Back to my bookings
+                        </a>
+                        <a th:href="@{/hotels}" class="text-decoration-none">
+                            🏨 Book Another Stay
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('💳 Payment page initialized');
+
+        // Initialize form handlers
+        initializeFormHandlers();
+
+        // Set up tab change handlers
+        initializeTabHandlers();
+
+        // Auto-dismiss alerts
+        initializeAutoDismiss();
+
+        console.log('✅ Payment page ready');
+    });
+
+    // Format card number with spaces
+    function formatCardNumber(input) {
+        let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
+        input.value = formattedValue.substring(0, 19);
+
+        // Validate card number length
+        const cleanValue = value.replace(/\s+/g, '');
+        if (cleanValue.length === 16) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+        } else if (cleanValue.length > 0) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+        } else {
+            input.classList.remove('is-invalid', 'is-valid');
+        }
+    }
+
+    // Format expiry date
+    function formatExpiryDate(input) {
+        let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        input.value = value.substring(0, 5);
+
+        // Validate expiry date
+        if (value.length === 5) {
+            const [month, year] = value.split('/');
+            const currentYear = new Date().getFullYear() % 100;
+            const currentMonth = new Date().getMonth() + 1;
+
+            if (month >= 1 && month <= 12 && year >= currentYear) {
+                if (year == currentYear && month >= currentMonth || year > currentYear) {
+                    input.classList.remove('is-invalid');
+                    input.classList.add('is-valid');
+                    return;
+                }
+            }
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+        } else if (value.length > 0) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+        } else {
+            input.classList.remove('is-invalid', 'is-valid');
+        }
+    }
+
+    // Format CVV
+    function formatCVV(input) {
+        input.value = input.value.replace(/[^0-9]/g, '').substring(0, 3);
+
+        // Validate CVV
+        if (input.value.length === 3) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+        } else if (input.value.length > 0) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+        } else {
+            input.classList.remove('is-invalid', 'is-valid');
+        }
+    }
+
+    function initializeFormHandlers() {
+        // Card payment form
+        const paymentForm = document.getElementById('paymentForm');
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', function(e) {
+                if (!validateCardForm()) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                const payButton = document.getElementById('payButton');
+                const spinner = payButton.querySelector('.spinner-border');
+
+                // Show loading state
+                payButton.disabled = true;
+                spinner.style.display = 'inline-block';
+                payButton.innerHTML = spinner.outerHTML + ' Processing Payment...';
+
+                console.log('🔄 Card payment form submitted');
+            });
+        }
+
+        // Cash payment form
+        const cashPaymentForm = document.getElementById('cashPaymentForm');
+        if (cashPaymentForm) {
+            cashPaymentForm.addEventListener('submit', function(e) {
+                const cashPayButton = document.getElementById('cashPayButton');
+                const spinner = cashPayButton.querySelector('.spinner-border');
+
+                // Show loading state
+                cashPayButton.disabled = true;
+                spinner.style.display = 'inline-block';
+                cashPayButton.innerHTML = spinner.outerHTML + ' Confirming...';
+
+                console.log('🔄 Cash payment form submitted');
+            });
+        }
+    }
+
+    function initializeTabHandlers() {
+        const tabTriggers = document.querySelectorAll('button[data-bs-toggle="pill"]');
+        tabTriggers.forEach(trigger => {
+            trigger.addEventListener('shown.bs.tab', function (e) {
+                console.log('🔀 Switched to tab: ' + e.target.id);
+            });
+        });
+    }
+
+    function initializeAutoDismiss() {
+        // Auto-dismiss alerts after 8 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 8000);
+    }
+
+    function validateCardForm() {
+        const cardNumber = document.getElementById('cardNumber').value.replace(/\s+/g, '');
+        const cardHolderName = document.getElementById('cardHolderName').value.trim();
+        const expiryDate = document.getElementById('expiryDate').value;
+        const cvv = document.getElementById('cvv').value;
+
+        let isValid = true;
+        let errorMessage = '';
+
+        // Validate card number
+        if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
+            isValid = false;
+            errorMessage = 'Please enter a valid 16-digit card number.';
+        }
+
+        // Validate cardholder name
+        else if (cardHolderName.length < 2) {
+            isValid = false;
+            errorMessage = 'Please enter the cardholder name.';
+        }
+
+        // Validate expiry date
+        else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) {
+            isValid = false;
+            errorMessage = 'Please enter a valid expiry date (MM/YY).';
+        }
+
+        // Validate CVV
+        else if (cvv.length !== 3 || !/^\d+$/.test(cvv)) {
+            isValid = false;
+            errorMessage = 'Please enter a valid 3-digit CVV.';
+        }
+
+        if (!isValid) {
+            alert('❌ ' + errorMessage);
+            return false;
+        }
+
+        console.log('✅ Card form validation passed');
+        return true;
+    }
+
+    // Test card numbers for development
+    function fillTestData() {
+        // Only enable in development
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('🧪 Development mode - test data available');
+
+            // Uncomment to auto-fill test data
+            /*
+            document.getElementById('cardNumber').value = '4111 1111 1111 1111';
+            document.getElementById('cardHolderName').value = 'John Doe';
+            document.getElementById('expiryDate').value = '12/34';
+            document.getElementById('cvv').value = '123';
+            */
+        }
+    }
+
+    // Call test data function
+    fillTestData();
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+# Render Configuration for Hotel Booking System
+# Documentation: https://render.com/docs
+
+services:
+  # Spring Boot Application
+  - type: web
+    name: hotel-booking-system
+    env: java
+    plan: free
+    region: oregon  # or singapore, frankfurt, ohio
+
+    # Build Configuration
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/booking-system-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+
+    # Environment Variables
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+      # Database Configuration (from Render PostgreSQL)
+      - key: JDBC_DATABASE_URL
+        fromDatabase:
+          name: hotel_booking_db
+          property: connectionString
+
+      # RazorPay Configuration
+      - key: RAZORPAY_KEY_ID
+        value: your_production_razorpay_key
+      - key: RAZORPAY_KEY_SECRET
+        value: your_production_razorpay_secret
+
+      # Email Configuration
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USERNAME
+        value: your_production_email@gmail.com
+      - key: SMTP_PASSWORD
+        value: your_app_password
+
+      # JPA Configuration
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+      - key: SPRING_JPA_SHOW_SQL
+        value: false
+
+    # Health Check
+    healthCheckPath: /actuator/health
+
+    # Auto-Deploy
+    autoDeploy: true
+
+  # PostgreSQL Database (Render provides this)
+  - type: pgsql
+    name: hotel_booking_db
+    plan: free
+    ipAllowList: []
+    databaseName: hotel_booking_db
+    user: hotel_user
+
+# Blueprint (Infrastructure as Code)
+blueprint:
+  name: hotel-booking-system
+  services:
+    - type: web
+      name: hotel-booking-app
+    - type: pgsql
+      name: hotel-booking-database

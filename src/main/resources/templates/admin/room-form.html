@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${room.id != null} ? 'Edit Room' : 'Add Room'">Room Form - Hotel Booking System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">HotelBooking Admin</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/dashboard">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/users">
+            <i class="fas fa-users"></i> Users
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/hotels">
+            <i class="fas fa-hotel"></i> Hotels
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/bookings">
+            <i class="fas fa-calendar-check"></i> Bookings
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/payments">
+            <i class="fas fa-credit-card"></i> Payments
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/reports">
+            <i class="fas fa-chart-bar"></i> Reports
+          </a>
+        </li>
+      </ul>
+      <div class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user-cog"></i> Admin
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/admin/profile">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="dropdown-item">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </form>
+            </li>
+          </ul>
+        </li>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0" th:text="${room.id != null} ? 'Edit Room' : 'Add New Room'">Room Form</h4>
+          <p class="text-muted mb-0" th:if="${hotel}" th:text="'Hotel: ' + ${hotel.name}">Hotel Name</p>
+        </div>
+        <div class="card-body">
+          <form th:action="${room.id != null} ? @{/admin/rooms/{id}(id=${room.id}) : @{/admin/hotels/{hotelId}/rooms(hotelId=${hotel.id})}"
+                method="post" th:object="${room}">
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="roomNumber" class="form-label">Room Number *</label>
+                  <input type="text" class="form-control" id="roomNumber" th:field="*{roomNumber}" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="roomType" class="form-label">Room Type *</label>
+                  <select class="form-select" id="roomType" th:field="*{roomType}" required>
+                    <option value="">Select Room Type</option>
+                    <option value="Standard Single">Standard Single</option>
+                    <option value="Standard Double">Standard Double</option>
+                    <option value="Deluxe King">Deluxe King</option>
+                    <option value="Deluxe Queen">Deluxe Queen</option>
+                    <option value="Executive Suite">Executive Suite</option>
+                    <option value="Presidential Suite">Presidential Suite</option>
+                    <option value="Family Suite">Family Suite</option>
+                    <option value="Business Room">Business Room</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="price" class="form-label">Price per Night ($) *</label>
+                  <input type="number" class="form-control" id="price" th:field="*{price}"
+                         min="0" step="0.01" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="capacity" class="form-label">Capacity (Guests) *</label>
+                  <input type="number" class="form-control" id="capacity" th:field="*{capacity}"
+                         min="1" max="10" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="totalRooms" class="form-label">Total Rooms Available *</label>
+                  <input type="number" class="form-control" id="totalRooms" th:field="*{totalRooms}"
+                         min="1" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Availability</label>
+                  <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="available" th:field="*{available}">
+                    <label class="form-check-label" for="available">
+                      Room is available for booking
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Room Description</label>
+              <textarea class="form-control" id="description" th:field="*{description}"
+                        rows="3" placeholder="Describe the room features, view, etc."></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="amenities" class="form-label">Amenities</label>
+              <textarea class="form-control" id="amenities" th:field="*{amenities}"
+                        rows="2" placeholder="Free WiFi, TV, Air Conditioning, Mini Bar, etc."></textarea>
+              <div class="form-text">Separate amenities with commas</div>
+            </div>
+
+            <!-- Quick Amenities Selection -->
+            <div class="mb-3">
+              <label class="form-label">Quick Amenities</label>
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Free WiFi" id="wifi">
+                    <label class="form-check-label" for="wifi">Free WiFi</label>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="TV" id="tv">
+                    <label class="form-check-label" for="tv">TV</label>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Air Conditioning" id="ac">
+                    <label class="form-check-label" for="ac">Air Conditioning</label>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Mini Bar" id="minibar">
+                    <label class="form-check-label" for="minibar">Mini Bar</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                <span th:text="${room.id != null} ? 'Update Room' : 'Create Room'">Save</span>
+              </button>
+              <a th:if="${hotel}" th:href="@{/admin/hotels/{hotelId}/rooms(hotelId=${hotel.id})}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+              </a>
+              <a th:unless="${hotel}" th:href="@{/admin/hotels}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Quick amenities selection
+  document.addEventListener('DOMContentLoaded', function() {
+      const amenitiesTextarea = document.getElementById('amenities');
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+      checkboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', function() {
+              let amenities = amenitiesTextarea.value ? amenitiesTextarea.value.split(', ') : [];
+
+              if (this.checked) {
+                  if (!amenities.includes(this.value)) {
+                      amenities.push(this.value);
+                  }
+              } else {
+                  amenities = amenities.filter(amenity => amenity !== this.value);
+              }
+
+              amenitiesTextarea.value = amenities.join(', ');
+          });
+      });
+
+      // Pre-check amenities if they exist in textarea
+      const currentAmenities = amenitiesTextarea.value ? amenitiesTextarea.value.split(', ') : [];
+      checkboxes.forEach(checkbox => {
+          if (currentAmenities.includes(checkbox.value)) {
+              checkbox.checked = true;
+          }
+      });
+  });
+</script>
+</body>
+</html>

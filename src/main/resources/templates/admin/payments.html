@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Payments - Hotel Booking System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">HotelBooking Admin</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/dashboard">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/users">
+            <i class="fas fa-users"></i> Users
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/hotels">
+            <i class="fas fa-hotel"></i> Hotels
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/bookings">
+            <i class="fas fa-calendar-check"></i> Bookings
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/admin/payments">
+            <i class="fas fa-credit-card"></i> Payments
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/reports">
+            <i class="fas fa-chart-bar"></i> Reports
+          </a>
+        </li>
+      </ul>
+      <div class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user-cog"></i> Admin
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/admin/profile">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="dropdown-item">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </form>
+            </li>
+          </ul>
+        </li>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid mt-4">
+  <!-- Success Messages -->
+  <div th:if="${param.refunded}" class="alert alert-info alert-dismissible fade show">
+    <i class="fas fa-info-circle"></i> Payment refunded successfully!
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-credit-card"></i> Payment Management</h2>
+    <div class="text-muted">
+      Total Revenue: <span class="badge bg-success" th:text="'$' + ${#numbers.formatDecimal(totalRevenue != null ? totalRevenue : 0, 1, 2)}">$0</span>
+    </div>
+  </div>
+
+  <!-- Payment Statistics -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5>Successful Payments</h5>
+              <h2 th:text="${successfulPayments != null ? successfulPayments : 0}">0</h2>
+            </div>
+            <div class="align-self-center">
+              <i class="fas fa-check-circle fa-2x"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card bg-danger text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5>Failed Payments</h5>
+              <h2 th:text="${failedPayments != null ? failedPayments : 0}">0</h2>
+            </div>
+            <div class="align-self-center">
+              <i class="fas fa-times-circle fa-2x"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5>Total Revenue</h5>
+              <h2 th:text="'$' + ${#numbers.formatDecimal(totalRevenue != null ? totalRevenue : 0, 1, 2)}">$0</h2>
+            </div>
+            <div class="align-self-center">
+              <i class="fas fa-dollar-sign fa-2x"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <form class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Payment Status</label>
+          <select class="form-select">
+            <option value="">All Status</option>
+            <option value="SUCCESS">Success</option>
+            <option value="FAILED">Failed</option>
+            <option value="PENDING">Pending</option>
+            <option value="REFUNDED">Refunded</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Payment Method</label>
+          <select class="form-select">
+            <option value="">All Methods</option>
+            <option value="CREDIT_CARD">Credit Card</option>
+            <option value="DEBIT_CARD">Debit Card</option>
+            <option value="RAZORPAY">RazorPay</option>
+            <option value="CASH">Cash</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Date Range</label>
+          <input type="date" class="form-control">
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="fas fa-filter"></i> Filter Payments
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Payments Table -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Payment Transactions</h5>
+    </div>
+    <div class="card-body">
+      <div th:if="${payments != null and payments.empty}" class="alert alert-info">
+        <i class="fas fa-info-circle"></i> No payment transactions found.
+      </div>
+
+      <div class="table-responsive" th:unless="${payments == null or payments.empty}">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+          <tr>
+            <th>Transaction ID</th>
+            <th>Booking ID</th>
+            <th>User</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="payment : ${payments}">
+            <td>
+              <strong th:text="${payment.transactionId != null ? payment.transactionId : 'N/A'}">TXN123456</strong>
+            </td>
+            <td>
+              <span class="badge bg-secondary" th:text="'#' + ${payment.booking != null ? payment.booking.id : 'N/A'}">#123</span>
+            </td>
+            <td>
+              <div th:if="${payment.booking != null and payment.booking.user != null}">
+                <strong th:text="${payment.booking.user.name}">User Name</strong>
+                <br>
+                <small class="text-muted" th:text="${payment.booking.user.email}">user@email.com</small>
+              </div>
+              <div th:unless="${payment.booking != null and payment.booking.user != null}">
+                <strong>Unknown User</strong>
+              </div>
+            </td>
+            <td>
+              <strong class="text-success" th:text="'$' + ${#numbers.formatDecimal(payment.amount != null ? payment.amount : 0, 1, 2)}">$200</strong>
+            </td>
+            <td>
+              <span th:if="${payment.paymentMethod == 'RAZORPAY'}" class="badge bg-primary">
+                <i class="fas fa-credit-card"></i> RazorPay
+              </span>
+              <span th:if="${payment.paymentMethod == 'CASH'}" class="badge bg-secondary">
+                <i class="fas fa-money-bill"></i> Cash
+              </span>
+              <span th:if="${payment.paymentMethod != 'RAZORPAY' and payment.paymentMethod != 'CASH' and payment.paymentMethod != null}"
+                    class="badge bg-info" th:text="${payment.paymentMethod}">
+                Credit Card
+              </span>
+              <span th:if="${payment.paymentMethod == null}" class="badge bg-warning">
+                Unknown
+              </span>
+            </td>
+            <td>
+              <span th:if="${payment.status != null and payment.status.name() == 'SUCCESS'}" class="badge bg-success">
+                <i class="fas fa-check"></i> SUCCESS
+              </span>
+              <span th:if="${payment.status != null and payment.status.name() == 'FAILED'}" class="badge bg-danger">
+                <i class="fas fa-times"></i> FAILED
+              </span>
+              <span th:if="${payment.status != null and payment.status.name() == 'PENDING'}" class="badge bg-warning">
+                <i class="fas fa-clock"></i> PENDING
+              </span>
+              <span th:if="${payment.status != null and payment.status.name() == 'REFUNDED'}" class="badge bg-info">
+                <i class="fas fa-undo"></i> REFUNDED
+              </span>
+              <span th:if="${payment.status == null}" class="badge bg-secondary">
+                UNKNOWN
+              </span>
+            </td>
+            <td th:text="${payment.paymentDate != null ? #temporals.format(payment.paymentDate, 'MMM dd, yyyy HH:mm') : 'N/A'}">Jan 01, 2024 14:30</td>
+            <td>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary" data-bs-toggle="tooltip" title="View Details">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <form th:if="${payment.status != null and payment.status.name() == 'SUCCESS'}"
+                      th:action="@{/admin/payments/{id}/refund(id=${payment.id})}"
+                      method="post" class="d-inline">
+                  <button type="submit" class="btn btn-outline-warning"
+                          data-bs-toggle="tooltip" title="Refund Payment"
+                          onclick="return confirm('Are you sure you want to refund this payment?')">
+                    <i class="fas fa-undo"></i>
+                  </button>
+                </form>
+                <button class="btn btn-outline-info" data-bs-toggle="tooltip" title="Download Receipt">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue Summary - FIXED SECTION -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Revenue Summary</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3 text-center">
+              <div class="border rounded p-3">
+                <i class="fas fa-credit-card fa-2x text-primary mb-2"></i>
+                <h5>Online Payments</h5>
+                <p class="text-success" th:text="'$' + ${#numbers.formatDecimal(onlinePayments != null ? onlinePayments : 0, 1, 2)}">$0</p>
+              </div>
+            </div>
+            <div class="col-md-3 text-center">
+              <div class="border rounded p-3">
+                <i class="fas fa-money-bill fa-2x text-success mb-2"></i>
+                <h5>Cash Payments</h5>
+                <p class="text-success" th:text="'$' + ${#numbers.formatDecimal(cashPayments != null ? cashPayments : 0, 1, 2)}">$0</p>
+              </div>
+            </div>
+            <div class="col-md-3 text-center">
+              <div class="border rounded p-3">
+                <i class="fas fa-undo fa-2x text-warning mb-2"></i>
+                <h5>Total Refunds</h5>
+                <p class="text-danger" th:text="'$' + ${#numbers.formatDecimal(totalRefunds != null ? totalRefunds : 0, 1, 2)}">$0</p>
+              </div>
+            </div>
+            <div class="col-md-3 text-center">
+              <div class="border rounded p-3">
+                <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
+                <h5>Net Revenue</h5>
+                <p class="text-primary" th:text="'$' + ${#numbers.formatDecimal(totalRevenue != null ? totalRevenue : 0, 1, 2)}">$0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Initialize tooltips
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+  });
+
+  // Auto-dismiss alerts
+  setTimeout(function() {
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+          var bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+      });
+  }, 5000);
+</script>
+</body>
+</html>

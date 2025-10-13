@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmation</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #28a745; color: white; padding: 20px; text-align: center; }
+        .content { background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .footer { text-align: center; padding: 20px; color: #666; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Booking Confirmed! 🎉</h2>
+    </div>
+
+    <p>Dear <span th:text="${userName}">User</span>,</p>
+    <p>Your booking has been successfully confirmed. We're excited to host you!</p>
+
+    <div class="content">
+        <h3 th:text="${hotel.name}">Hotel Name</h3>
+        <p><strong>Address:</strong> <span th:text="${hotel.address} + ', ' + ${hotel.city}">Address</span></p>
+        <p><strong>Check-in:</strong> <span th:text="${#temporals.format(booking.checkInDate, 'MMM dd, yyyy')}">Date</span></p>
+        <p><strong>Check-out:</strong> <span th:text="${#temporals.format(booking.checkOutDate, 'MMM dd, yyyy')}">Date</span></p>
+        <p><strong>Room:</strong> <span th:text="${booking.room.roomNumber} + ' - ' + ${booking.room.roomType}">Room Details</span></p>
+        <p><strong>Guests:</strong> <span th:text="${booking.numberOfGuests}">1</span></p>
+        <p><strong>Total Amount:</strong> $<span th:text="${booking.totalAmount}">0</span></p>
+    </div>
+
+    <p>We look forward to welcoming you!</p>
+    <p><strong>The Hotel Booking Team</strong></p>
+
+    <div class="footer">
+        <p>If you have any questions, please contact our support team.</p>
+    </div>
+</div>
+</body>
+</html>

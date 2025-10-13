@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Confirmation</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #007bff; color: white; padding: 20px; text-align: center; }
+        .content { background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .footer { text-align: center; padding: 20px; color: #666; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Payment Successful! ✅</h2>
+    </div>
+
+    <p>Dear <span th:text="${userName}">User</span>,</p>
+    <p>Your payment has been processed successfully. Here are your payment details:</p>
+
+    <div class="content">
+        <h3>Payment Details</h3>
+        <p><strong>Transaction ID:</strong> <span th:text="${payment.transactionId}">TXN123</span></p>
+        <p><strong>Amount Paid:</strong> $<span th:text="${payment.amount}">0</span></p>
+        <p><strong>Payment Method:</strong> <span th:text="${payment.paymentMethod}">Method</span></p>
+        <p><strong>Payment Date:</strong> <span th:text="${#temporals.format(payment.paymentDate, 'MMM dd, yyyy HH:mm')}">Date</span></p>
+
+        <h4>Booking Information</h4>
+        <p><strong>Hotel:</strong> <span th:text="${booking.room.hotel.name}">Hotel Name</span></p>
+        <p><strong>Dates:</strong> <span th:text="${#temporals.format(booking.checkInDate, 'MMM dd, yyyy')} + ' to ' + ${#temporals.format(booking.checkOutDate, 'MMM dd, yyyy')}">Dates</span></p>
+    </div>
+
+    <p>Thank you for your payment!</p>
+    <p><strong>The Hotel Booking Team</strong></p>
+
+    <div class="footer">
+        <p>If you have any questions about this payment, please contact our support team.</p>
+    </div>
+</div>
+</body>
+</html>

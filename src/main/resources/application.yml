@@ -1,0 +1,103 @@
+# =============================================
+# HOTEL BOOKING SYSTEM - DEVELOPMENT PROFILE
+# =============================================
+
+spring:
+  profiles:
+    active: dev
+
+  # Database Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/hotel_booking_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: manjula
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc.lob.non_contextual_creation: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  # Thymeleaf Configuration
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+
+  # Mail Configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your_email@gmail.com
+    password: your_app_password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+  # File Upload
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  # Security Configuration
+  security:
+    filter:
+      order: 10
+
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  http2:
+    enabled: true
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+
+# JWT Configuration
+jwt:
+  secret: mySuperSecretKeyForHotelBookingSystem2024MakeItVeryLongAndSecure
+  expiration: 86400000  # 24 hours in milliseconds
+
+# RazorPay Configuration
+razorpay:
+  key:
+    id: rzp_test_xxx
+    secret: test_secret
+
+# Logging Configuration
+logging:
+  level:
+    com.hotel.booking_system: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
