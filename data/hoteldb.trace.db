@@ -1,0 +1,113 @@
+2025-10-13 13:25:12.744529+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "\000d\000a    create table bookings (\000d\000a        id bigint not null auto_increment,\000d\000a        cancellation_date date,\000d\000a        check_in_date date not null,\000d\000a        check_out_date date not null,\000d\000a        created_at datetime(6),\000d\000a        number_of_guests integer,\000d\000a        refund_amount decimal(38,2),\000d\000a        refund_date date,\000d\000a        room_count integer,\000d\000a        special_requests varchar(255),\000d\000a        status enum ('CANCELLED','COMPLETED','CONFIRMED','PENDING','REFUNDED'),\000d\000a        total_amount decimal(38,2),\000d\000a        updated_at datetime(6),\000d\000a        room_id bigint,\000d\000a        user_id bigint,\000d\000a        primary key (id)\000d\000a    ) engine[*]=InnoDB"; expected "identifier"; SQL statement:
+
+    create table bookings (
+        id bigint not null auto_increment,
+        cancellation_date date,
+        check_in_date date not null,
+        check_out_date date not null,
+        created_at datetime(6),
+        number_of_guests integer,
+        refund_amount decimal(38,2),
+        refund_date date,
+        room_count integer,
+        special_requests varchar(255),
+        status enum ('CANCELLED','COMPLETED','CONFIRMED','PENDING','REFUNDED'),
+        total_amount decimal(38,2),
+        updated_at datetime(6),
+        room_id bigint,
+        user_id bigint,
+        primary key (id)
+    ) engine=InnoDB [42001-232]
+2025-10-13 13:25:12.762640+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "\000d\000a    create table hotels (\000d\000a        id bigint not null auto_increment,\000d\000a        address varchar(255) not null,\000d\000a        city varchar(255) not null,\000d\000a        created_at datetime(6),\000d\000a        description varchar(255),\000d\000a        image_url varchar(255),\000d\000a        name varchar(255) not null,\000d\000a        rating float(53) not null,\000d\000a        updated_at datetime(6),\000d\000a        primary key (id)\000d\000a    ) engine[*]=InnoDB"; expected "identifier"; SQL statement:
+
+    create table hotels (
+        id bigint not null auto_increment,
+        address varchar(255) not null,
+        city varchar(255) not null,
+        created_at datetime(6),
+        description varchar(255),
+        image_url varchar(255),
+        name varchar(255) not null,
+        rating float(53) not null,
+        updated_at datetime(6),
+        primary key (id)
+    ) engine=InnoDB [42001-232]
+2025-10-13 13:25:12.769791+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "\000d\000a    create table payments (\000d\000a        id bigint not null auto_increment,\000d\000a        amount decimal(38,2) not null,\000d\000a        card_last_four varchar(255),\000d\000a        created_at datetime(6),\000d\000a        payment_date datetime(6),\000d\000a        payment_details varchar(255),\000d\000a        payment_method varchar(255),\000d\000a        refund_date datetime(6),\000d\000a        status enum ('CANCELLED','FAILED','PENDING','REFUNDED','SUCCESS'),\000d\000a        transaction_id varchar(255),\000d\000a        updated_at datetime(6),\000d\000a        booking_id bigint,\000d\000a        primary key (id)\000d\000a    ) engine[*]=InnoDB"; expected "identifier"; SQL statement:
+
+    create table payments (
+        id bigint not null auto_increment,
+        amount decimal(38,2) not null,
+        card_last_four varchar(255),
+        created_at datetime(6),
+        payment_date datetime(6),
+        payment_details varchar(255),
+        payment_method varchar(255),
+        refund_date datetime(6),
+        status enum ('CANCELLED','FAILED','PENDING','REFUNDED','SUCCESS'),
+        transaction_id varchar(255),
+        updated_at datetime(6),
+        booking_id bigint,
+        primary key (id)
+    ) engine=InnoDB [42001-232]
+2025-10-13 13:25:12.775224+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "\000d\000a    create table rooms (\000d\000a        id bigint not null auto_increment,\000d\000a        amenities varchar(255),\000d\000a        available bit,\000d\000a        capacity integer not null,\000d\000a        created_at datetime(6),\000d\000a        description varchar(255),\000d\000a        price decimal(38,2) not null,\000d\000a        room_number varchar(255) not null,\000d\000a        room_type varchar(255) not null,\000d\000a        total_rooms integer,\000d\000a        updated_at datetime(6),\000d\000a        hotel_id bigint,\000d\000a        primary key (id)\000d\000a    ) engine[*]=InnoDB"; expected "identifier"; SQL statement:
+
+    create table rooms (
+        id bigint not null auto_increment,
+        amenities varchar(255),
+        available bit,
+        capacity integer not null,
+        created_at datetime(6),
+        description varchar(255),
+        price decimal(38,2) not null,
+        room_number varchar(255) not null,
+        room_type varchar(255) not null,
+        total_rooms integer,
+        updated_at datetime(6),
+        hotel_id bigint,
+        primary key (id)
+    ) engine=InnoDB [42001-232]
+2025-10-13 13:25:12.780738+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PAYMENTS" not found (this database is empty); SQL statement:
+
+    alter table payments 
+       drop index UKnuscjm6x127hkb15kcb8n56wo [42104-232]
+2025-10-13 13:25:12.782201+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PAYMENTS" not found; SQL statement:
+
+    alter table payments 
+       add constraint UKnuscjm6x127hkb15kcb8n56wo unique (booki [42102-232]
+2025-10-13 13:25:12.784355+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BOOKINGS" not found; SQL statement:
+
+    alter table bookings 
+       add constraint FKrgoycol97o21kpjodw1qox4nc 
+       foreign key (room_id) 
+       references room [42102-232]
+2025-10-13 13:25:12.787611+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BOOKINGS" not found; SQL statement:
+
+    alter table bookings 
+       add constraint FKeyog2oic85xg7hsu2je2lx3s6 
+       foreign key (user_id) 
+       references user [42102-232]
+2025-10-13 13:25:12.790826+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PAYMENTS" not found; SQL statement:
+
+    alter table payments 
+       add constraint FKc52o2b1jkxttngufqp3t7jr3h 
+       foreign key (booking_id) 
+       references booking [42102-232]
+2025-10-13 13:25:12.794073+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ROOMS" not found; SQL statement:
+
+    alter table rooms 
+       add constraint FKp5lufxy0ghq53ugm93hdc941k 
+       foreign key (hotel_id) 
+       references hotel [42102-232]
+2025-10-13 13:25:18.523225+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found (this database is empty); SQL statement:
+select u1_0.id,u1_0.created_at,u1_0.email,u1_0.name,u1_0.password,u1_0.role,u1_0.updated_at from users u1_0 where u1_0.email=? [42104-232]
