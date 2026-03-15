@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RegistrationController {
@@ -22,11 +23,41 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user, Model model) {
+    public String registerUser(@ModelAttribute User user,
+                               @RequestParam String role,
+                               Model model) {
         try {
-            userService.registerUser(user);
-            return "redirect:/login?registered";
+            System.out.println("🔹 Registration request received");
+            System.out.println("   - Name: " + user.getName());
+            System.out.println("   - Email: " + user.getEmail());
+            System.out.println("   - Selected Role: " + role);
+
+            // Set the selected role
+            if ("ADMIN".equalsIgnoreCase(role)) {
+                user.setRole(User.Role.ADMIN);
+                System.out.println("   → Setting role to ADMIN");
+            } else {
+                user.setRole(User.Role.USER);
+                System.out.println("   → Setting role to USER");
+            }
+
+            // Register the user
+            User registeredUser = userService.registerUser(user);
+
+            System.out.println("✅ Registration successful!");
+            System.out.println("   - User ID: " + registeredUser.getId());
+            System.out.println("   - Final Role: " + registeredUser.getRole());
+
+            // Different success message based on role
+            if (registeredUser.getRole() == User.Role.ADMIN) {
+                return "redirect:/login?admin_registered";
+            } else {
+                return "redirect:/login?user_registered";
+            }
+
         } catch (RuntimeException e) {
+            System.err.println("❌ Registration error: " + e.getMessage());
+            e.printStackTrace();
             model.addAttribute("error", e.getMessage());
             model.addAttribute("user", user);
             return "register";

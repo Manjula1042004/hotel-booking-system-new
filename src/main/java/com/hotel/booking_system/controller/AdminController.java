@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,11 +33,24 @@ public class AdminController {
     @Autowired
     private PaymentService paymentService;
 
-    // ===== ENHANCED ADMIN DASHBOARD - COMPREHENSIVE SYSTEM OVERVIEW =====
+    // ===== SINGLE DASHBOARD METHOD WITH Principal =====
     @GetMapping("/dashboard")
-    public String adminDashboard(Model model) {
+    public String adminDashboard(Model model, Principal principal) {
         try {
             System.out.println("Loading admin dashboard...");
+
+            // Optional: Verify admin role (adds security)
+            if (principal != null) {
+                String email = principal.getName();
+                User admin = userService.getUserByEmail(email)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+
+                // Double-check the user is actually an admin
+                if (admin.getRole() != User.Role.ADMIN) {
+                    return "redirect:/access-denied";
+                }
+                System.out.println("Admin dashboard accessed by: " + admin.getEmail());
+            }
 
             // Get comprehensive system statistics with null checks
             List<User> allUsers = userService.getAllUsers();
@@ -116,7 +130,7 @@ public class AdminController {
         }
     }
 
-    // ===== USER MANAGEMENT - FIXED =====
+    // ===== USER MANAGEMENT =====
     @GetMapping("/users")
     public String manageUsers(Model model) {
         try {
@@ -168,7 +182,7 @@ public class AdminController {
         }
     }
 
-    // ===== HOTEL MANAGEMENT - FIXED =====
+    // ===== HOTEL MANAGEMENT =====
     @GetMapping("/hotels")
     public String manageHotels(Model model) {
         try {
@@ -253,7 +267,7 @@ public class AdminController {
         }
     }
 
-    // ===== BOOKING MANAGEMENT - FIXED =====
+    // ===== BOOKING MANAGEMENT =====
     @GetMapping("/bookings")
     public String manageBookings(Model model) {
         try {
@@ -312,6 +326,7 @@ public class AdminController {
             return "redirect:/admin/bookings?error=" + e.getMessage().replace(" ", "+");
         }
     }
+
     @PostMapping("/payments/{id}/refund")
     public String refundPayment(@PathVariable Long id) {
         try {
@@ -322,7 +337,7 @@ public class AdminController {
         }
     }
 
-    // ===== PAYMENT MANAGEMENT - FIXED =====
+    // ===== PAYMENT MANAGEMENT =====
     @GetMapping("/payments")
     public String managePayments(Model model) {
         try {
@@ -354,7 +369,7 @@ public class AdminController {
     }
 
 
-    // ===== REPORTS PAGE - FIXED =====
+    // ===== REPORTS PAGE =====
     @GetMapping("/reports")
     public String showReports(Model model) {
         try {

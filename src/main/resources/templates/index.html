@@ -3,83 +3,1092 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Booking System</title>
+    <title>LUXURY STAYS - 7 Star Hotel Booking</title>
+
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Google Fonts - Playfair Display for luxury feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Swiper Slider CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            background-color: #faf9f7;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        /* Luxury Gradient Backgrounds */
+        .luxury-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .gold-gradient {
+            background: linear-gradient(135deg, #bf9530, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Navigation */
+        .navbar {
+            padding: 20px 0;
+            background: transparent !important;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9) !important;
+            padding: 15px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff !important;
+            letter-spacing: 2px;
+        }
+
+        .navbar-brand span {
+            color: #ffd700;
+            font-size: 12px;
+            display: block;
+            letter-spacing: 5px;
+            margin-top: -5px;
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-weight: 500;
+            margin: 0 15px;
+            position: relative;
+            padding: 5px 0 !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ffd700;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .btn-luxury {
+            background: linear-gradient(135deg, #ffd700 0%, #fbbf24 100%);
+            color: #1a1a1a;
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-luxury:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+            color: #1a1a1a;
+        }
+
+        .btn-luxury-outline {
+            background: transparent;
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            padding: 10px 25px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-luxury-outline:hover {
+            background: #ffd700;
+            color: #1a1a1a;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .hero-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-slide {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            z-index: 10;
+            width: 90%;
+            max-width: 900px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            color: #ffd700;
+            font-weight: 400;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-title {
+            font-size: 80px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 2px 2px 20px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease 0.2s;
+            animation-fill-mode: both;
+        }
+
+        .hero-description {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.4s;
+            animation-fill-mode: both;
+        }
+
+        .hero-buttons {
+            animation: fadeInUp 1s ease 0.6s;
+            animation-fill-mode: both;
+        }
+
+        /* Search Box */
+        .search-box-wrapper {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1100px;
+            z-index: 20;
+            animation: slideUp 1s ease 0.8s;
+            animation-fill-mode: both;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+
+        .search-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-tab {
+            padding: 10px 25px;
+            background: transparent;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .search-tab.active {
+            background: #ffd700;
+            color: #1a1a1a;
+        }
+
+        .search-form .form-control, .search-form .form-select {
+            height: 60px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 0 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .search-form .form-control:focus, .search-form .form-select:focus {
+            border-color: #ffd700;
+            box-shadow: none;
+        }
+
+        .search-form label {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .search-btn {
+            height: 60px;
+            background: linear-gradient(135deg, #ffd700 0%, #fbbf24 100%);
+            border: none;
+            border-radius: 10px;
+            color: #1a1a1a;
+            font-weight: 700;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Section Styles */
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 48px;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(135deg, #ffd700 0%, #fbbf24 100%);
+        }
+
+        .section-title p {
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Featured Hotels Card */
+        .hotel-card {
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .hotel-card-image {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .hotel-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .hotel-card:hover .hotel-card-image img {
+            transform: scale(1.1);
+        }
+
+        .hotel-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ffd700;
+            color: #1a1a1a;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 2;
+        }
+
+        .hotel-card-content {
+            padding: 25px;
+        }
+
+        .hotel-card-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .hotel-card-location {
+            color: #666;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .hotel-card-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stars {
+            color: #ffd700;
+        }
+
+        .rating-number {
+            background: #e5e7eb;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .hotel-card-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .hotel-card-price small {
+            font-size: 14px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .hotel-card-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .amenity-tag {
+            background: #f3f4f6;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Special Offers */
+        .offer-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .offer-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .offer-discount {
+            font-size: 60px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .offer-title {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .offer-validity {
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        /* Testimonials */
+        .testimonial-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 80px;
+            color: #ffd700;
+            opacity: 0.2;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .testimonial-rating {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .testimonial-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .author-info h6 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .author-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Newsletter */
+        .newsletter-section {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 80px 0;
+            color: #fff;
+            border-radius: 30px;
+            margin: 80px 0;
+        }
+
+        .newsletter-title {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .newsletter-form {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form input {
+            height: 70px;
+            border-radius: 50px;
+            border: none;
+            padding: 0 30px;
+            width: 100%;
+        }
+
+        .newsletter-form button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            height: 60px;
+            padding: 0 40px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ffd700 0%, #fbbf24 100%);
+            border: none;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 60px 0 30px;
+        }
+
+        .footer-title {
+            font-size: 24px;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: #ffd700;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: #999;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ffd700;
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: #2d2d2d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: #ffd700;
+            color: #1a1a1a;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid #2d2d2d;
+            color: #999;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 30px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 40px;
+            }
+
+            .hero-subtitle {
+                font-size: 14px;
+                letter-spacing: 4px;
+            }
+
+            .section-title h2 {
+                font-size: 32px;
+            }
+
+            .search-box {
+                padding: 20px;
+            }
+
+            .navbar-brand {
+                font-size: 24px;
+            }
+        }
+
+        /* Floating Elements */
+        .floating-icon {
+            position: absolute;
+            font-size: 24px;
+            color: rgba(255,255,255,0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ffd700 0%, #fbbf24 100%);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #fbbf24 0%, #ffd700 100%);
+        }
+    </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
     <div class="container">
-        <a class="navbar-brand" href="/">HotelBooking</a>
-        <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="/login">Login</a>
-            <a class="nav-link" href="/register">Register</a>
+        <a class="navbar-brand" href="/">
+            LUXURY STAYS
+            <span>7 STAR EXPERIENCE</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/hotels">Hotels</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#offers">Offers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#destinations">Destinations</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contact</a>
+                </li>
+                <!-- FIXED: Using sec:authorize instead of #authorization -->
+                <li class="nav-item ms-lg-3" sec:authorize="isAuthenticated()">
+                    <a href="/user/dashboard" class="btn btn-luxury-outline">
+                        <i class="fas fa-user"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item ms-lg-3" sec:authorize="!isAuthenticated()">
+                    <a href="/login" class="btn btn-luxury-outline">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </a>
+                </li>
+                <li class="nav-item ms-lg-2" sec:authorize="!isAuthenticated()">
+                    <a href="/register" class="btn btn-luxury">
+                        <i class="fas fa-user-plus"></i> Join Now
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
 
-<div class="hero-section">
-    <div class="container">
-        <div class="row align-items-center min-vh-75">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold text-white mb-4">Find Your Perfect Stay</h1>
-                <p class="lead text-white mb-4">Discover amazing hotels at the best prices</p>
+<!-- Hero Section with Slider -->
+<section class="hero-section">
+    <div class="hero-slider">
+        <div class="swiper heroSwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="hero-slide">
+                        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop" alt="Luxury Hotel">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="hero-slide">
+                        <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=2025&auto=format&fit=crop" alt="Infinity Pool">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="hero-slide">
+                        <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2070&auto=format&fit=crop" alt="Luxury Suite">
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
 
-                <div class="search-box bg-white p-4 rounded shadow">
-                    <form th:action="@{/search}" method="get" class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Destination</label>
-                            <input type="text" name="city" class="form-control" placeholder="Enter city" required>
+    <div class="hero-content">
+        <div class="hero-subtitle">WELCOME TO LUXURY</div>
+        <h1 class="hero-title">Experience<br>7-Star Living</h1>
+        <p class="hero-description">Indulge in unparalleled luxury at the world's most prestigious hotels. Book your extraordinary stay today.</p>
+        <div class="hero-buttons">
+            <a href="#featured" class="btn btn-luxury btn-lg me-3">Explore Hotels</a>
+            <a href="#offers" class="btn btn-luxury-outline btn-lg">Special Offers</a>
+        </div>
+    </div>
+
+    <!-- Floating Elements -->
+    <div class="floating-icon" style="top: 20%; left: 5%;"><i class="fas fa-crown"></i></div>
+    <div class="floating-icon" style="top: 70%; right: 5%;"><i class="fas fa-champagne-glasses"></i></div>
+
+    <!-- Advanced Search Box -->
+    <div class="search-box-wrapper">
+        <div class="search-box">
+            <div class="search-tabs">
+                <button class="search-tab active" data-target="hotels">Hotels</button>
+                <button class="search-tab" data-target="flights">Flights + Hotel</button>
+                <button class="search-tab" data-target="villas">Villas</button>
+            </div>
+
+            <form th:action="@{/search}" method="get" class="search-form">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label><i class="fas fa-map-marker-alt"></i> Destination</label>
+                        <input type="text" name="city" class="form-control" placeholder="Where to?"
+                               list="popularCities" required>
+                        <datalist id="popularCities">
+                            <option value="New York">🗽 New York</option>
+                            <option value="Paris">🗼 Paris</option>
+                            <option value="London">🇬🇧 London</option>
+                            <option value="Dubai">🌆 Dubai</option>
+                            <option value="Tokyo">🗾 Tokyo</option>
+                            <option value="Maldives">🏝️ Maldives</option>
+                            <option value="Singapore">🦁 Singapore</option>
+                        </datalist>
+                    </div>
+                    <div class="col-md-2">
+                        <label><i class="fas fa-calendar"></i> Check-in</label>
+                        <input type="date" name="checkInDate" class="form-control"
+                               th:min="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label><i class="fas fa-calendar"></i> Check-out</label>
+                        <input type="date" name="checkOutDate" class="form-control" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label><i class="fas fa-user"></i> Guests</label>
+                        <select name="guests" class="form-select">
+                            <option value="1">1 Guest</option>
+                            <option value="2" selected>2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5+ Guests</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label><i class="fas fa-bed"></i> Rooms</label>
+                        <select name="rooms" class="form-select">
+                            <option value="1">1 Room</option>
+                            <option value="2">2 Rooms</option>
+                            <option value="3">3 Rooms</option>
+                            <option value="4">4+ Rooms</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Hotels Section -->
+<section id="featured" class="py-5" style="padding: 100px 0;">
+    <div class="container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Featured Luxury Hotels</h2>
+            <p>Discover our handpicked collection of the world's most exclusive hotels</p>
+        </div>
+
+        <div class="row" id="featuredHotels">
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="hotel-card">
+                    <div class="hotel-card-image">
+                        <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=500&h=350&fit=crop" alt="Grand Plaza Hotel">
+                        <span class="hotel-badge">Luxury Collection</span>
+                    </div>
+                    <div class="hotel-card-content">
+                        <h3 class="hotel-card-title">Grand Plaza Hotel</h3>
+                        <div class="hotel-card-location">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                            <span>New York, USA</span>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Check-in</label>
-                            <input type="date" name="checkInDate" class="form-control" required>
+                        <div class="hotel-card-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-number">4.8</span>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Check-out</label>
-                            <input type="date" name="checkOutDate" class="form-control" required>
+                        <div class="hotel-card-amenities">
+                            <span class="amenity-tag"><i class="fas fa-wifi"></i> Free WiFi</span>
+                            <span class="amenity-tag"><i class="fas fa-swimmer"></i> Pool</span>
+                            <span class="amenity-tag"><i class="fas fa-dumbbell"></i> Gym</span>
+                            <span class="amenity-tag"><i class="fas fa-utensils"></i> Restaurant</span>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        <div class="hotel-card-price">
+                            $299 <small>/ night</small>
                         </div>
-                    </form>
+                        <a href="/hotels/1" class="btn btn-luxury w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="hotel-card">
+                    <div class="hotel-card-image">
+                        <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=500&h=350&fit=crop" alt="Paris Luxury Suites">
+                        <span class="hotel-badge">Best Seller</span>
+                    </div>
+                    <div class="hotel-card-content">
+                        <h3 class="hotel-card-title">Paris Luxury Suites</h3>
+                        <div class="hotel-card-location">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                            <span>Paris, France</span>
+                        </div>
+                        <div class="hotel-card-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-number">5.0</span>
+                        </div>
+                        <div class="hotel-card-amenities">
+                            <span class="amenity-tag"><i class="fas fa-wifi"></i> Free WiFi</span>
+                            <span class="amenity-tag"><i class="fas fa-spa"></i> Spa</span>
+                            <span class="amenity-tag"><i class="fas fa-champagne-glasses"></i> Bar</span>
+                            <span class="amenity-tag"><i class="fas fa-umbrella-beach"></i> Terrace</span>
+                        </div>
+                        <div class="hotel-card-price">
+                            $399 <small>/ night</small>
+                        </div>
+                        <a href="/hotels/2" class="btn btn-luxury w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="hotel-card">
+                    <div class="hotel-card-image">
+                        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500&h=350&fit=crop" alt="Royal Palm Hotel">
+                        <span class="hotel-badge">New</span>
+                    </div>
+                    <div class="hotel-card-content">
+                        <h3 class="hotel-card-title">Royal Palm Hotel</h3>
+                        <div class="hotel-card-location">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                            <span>Dubai, UAE</span>
+                        </div>
+                        <div class="hotel-card-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-number">4.9</span>
+                        </div>
+                        <div class="hotel-card-amenities">
+                            <span class="amenity-tag"><i class="fas fa-wifi"></i> Free WiFi</span>
+                            <span class="amenity-tag"><i class="fas fa-water"></i> Beach</span>
+                            <span class="amenity-tag"><i class="fas fa-concierge-bell"></i> Butler</span>
+                            <span class="amenity-tag"><i class="fas fa-car"></i> Limo</span>
+                        </div>
+                        <div class="hotel-card-price">
+                            $599 <small>/ night</small>
+                        </div>
+                        <a href="/hotels/3" class="btn btn-luxury w-100">View Details</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<section class="py-5">
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="/hotels" class="btn btn-luxury-outline btn-lg">
+                View All Hotels <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Special Offers Section -->
+<section id="offers" class="py-5" style="background: #f8f9fa; padding: 100px 0;">
     <div class="container">
-        <h2 class="text-center mb-5">Popular Destinations</h2>
+        <div class="section-title" data-aos="fade-up">
+            <h2>Special Offers</h2>
+            <p>Exclusive deals and packages for our valued guests</p>
+        </div>
+
         <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card destination-card">
-                    <img src="/images/new-york.jpg" class="card-img-top" alt="New York">
-                    <div class="card-body">
-                        <h5 class="card-title">New York</h5>
-                        <p class="card-text">The city that never sleeps</p>
-                        <a th:href="@{/hotels/search(city='New York')}" class="btn btn-outline-primary">Explore</a>
+            <div class="col-md-6" data-aos="fade-right">
+                <div class="offer-card">
+                    <div class="offer-discount">30% OFF</div>
+                    <h3 class="offer-title">Early Bird Special</h3>
+                    <p class="offer-validity">Valid for bookings 60+ days in advance</p>
+                    <p>Book your stay early and save big on luxury accommodations. Limited time offer.</p>
+                    <a href="/search?offer=earlybird" class="btn btn-luxury">Book Now</a>
+                </div>
+            </div>
+
+            <div class="col-md-6" data-aos="fade-left">
+                <div class="offer-card" style="background: linear-gradient(135deg, #ffd700 0%, #fbbf24 100%);">
+                    <div class="offer-discount">FREE NIGHT</div>
+                    <h3 class="offer-title">Stay 4, Pay 3</h3>
+                    <p class="offer-validity">Valid on stays of 4+ nights</p>
+                    <p>Enjoy one complimentary night when you book four or more nights at participating hotels.</p>
+                    <a href="/search?offer=stay4pay3" class="btn btn-luxury" style="background: #1a1a1a; color: #fff;">Book Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="display-4 text-warning mb-3">🎁</div>
+                        <h5>Birthday Special</h5>
+                        <p class="text-muted">Get 20% off + complimentary cake</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card destination-card">
-                    <img src="/images/paris.jpg" class="card-img-top" alt="Paris">
-                    <div class="card-body">
-                        <h5 class="card-title">Paris</h5>
-                        <p class="card-text">City of love and lights</p>
-                        <a th:href="@{/hotels/search(city='Paris')}" class="btn btn-outline-primary">Explore</a>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="display-4 text-warning mb-3">💑</div>
+                        <h5>Honeymoon Package</h5>
+                        <p class="text-muted">Romantic dinner + spa treatment</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card destination-card">
-                    <img src="/images/tokyo.jpg" class="card-img-top" alt="Tokyo">
-                    <div class="card-body">
-                        <h5 class="card-title">Tokyo</h5>
-                        <p class="card-text">Modern meets traditional</p>
-                        <a th:href="@{/hotels/search(city='Tokyo')}" class="btn btn-outline-primary">Explore</a>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="display-4 text-warning mb-3">👨‍👩‍👧‍👦</div>
+                        <h5>Family Package</h5>
+                        <p class="text-muted">Kids stay & eat free</p>
                     </div>
                 </div>
             </div>
@@ -87,12 +1096,474 @@
     </div>
 </section>
 
-<footer class="bg-dark text-white py-4 mt-5">
+<!-- Popular Destinations -->
+<section id="destinations" class="py-5" style="padding: 100px 0;">
+    <div class="container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Popular Destinations</h2>
+            <p>Explore the world's most sought-after travel destinations</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="100">
+                <a href="/hotels/search?city=New York" class="text-decoration-none">
+                    <div class="position-relative rounded-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=400&fit=crop"
+                             class="img-fluid" alt="New York" style="height: 300px; width: 100%; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white"
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+                            <h4 class="mb-0">New York</h4>
+                            <small>125+ Hotels</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="200">
+                <a href="/hotels/search?city=Paris" class="text-decoration-none">
+                    <div class="position-relative rounded-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=400&fit=crop"
+                             class="img-fluid" alt="Paris" style="height: 300px; width: 100%; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white"
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+                            <h4 class="mb-0">Paris</h4>
+                            <small>98+ Hotels</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="300">
+                <a href="/hotels/search?city=London" class="text-decoration-none">
+                    <div class="position-relative rounded-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=400&fit=crop"
+                             class="img-fluid" alt="London" style="height: 300px; width: 100%; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white"
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+                            <h4 class="mb-0">London</h4>
+                            <small>112+ Hotels</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="400">
+                <a href="/hotels/search?city=Tokyo" class="text-decoration-none">
+                    <div class="position-relative rounded-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=400&h=400&fit=crop"
+                             class="img-fluid" alt="Tokyo" style="height: 300px; width: 100%; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white"
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+                            <h4 class="mb-0">Tokyo</h4>
+                            <small>87+ Hotels</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5" style="background: #f8f9fa; padding: 100px 0;">
+    <div class="container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>What Our Guests Say</h2>
+            <p>Real experiences from our valued guests</p>
+        </div>
+
+        <div class="swiper testimonialSwiper" data-aos="fade-up">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">"Absolutely exceptional experience! The attention to detail and personalized service made our stay unforgettable. Truly a 7-star experience."</p>
+                        <div class="testimonial-author">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="author-avatar" alt="Sarah Johnson">
+                            <div class="author-info">
+                                <h6>Sarah Johnson</h6>
+                                <p>Business Traveler</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">"The most luxurious hotel I've ever stayed at. The views, the amenities, the service - everything was perfect. Can't wait to come back!"</p>
+                        <div class="testimonial-author">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="author-avatar" alt="Michael Chen">
+                            <div class="author-info">
+                                <h6>Michael Chen</h6>
+                                <p>Vacationer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="testimonial-text">"Outstanding service from the moment we arrived. The staff anticipated our every need. The room was spectacular with breathtaking views."</p>
+                        <div class="testimonial-author">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" class="author-avatar" alt="Emma Wilson">
+                            <div class="author-info">
+                                <h6>Emma Wilson</h6>
+                                <p>Honeymooner</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-5" style="padding: 100px 0;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop"
+                     class="img-fluid rounded-4 shadow-lg" alt="Luxury Experience">
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <h2 class="display-4 mb-4">Why Choose<br>Luxury Stays?</h2>
+                <div class="d-flex mb-4">
+                    <div class="flex-shrink-0">
+                        <div class="bg-warning rounded-circle p-3">
+                            <i class="fas fa-crown text-dark fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h4>7-Star Experience</h4>
+                        <p class="text-muted">Experience unparalleled luxury and service at the world's finest hotels.</p>
+                    </div>
+                </div>
+                <div class="d-flex mb-4">
+                    <div class="flex-shrink-0">
+                        <div class="bg-warning rounded-circle p-3">
+                            <i class="fas fa-shield-alt text-dark fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h4>Best Price Guarantee</h4>
+                        <p class="text-muted">We ensure you get the best rates for your luxury accommodation.</p>
+                    </div>
+                </div>
+                <div class="d-flex mb-4">
+                    <div class="flex-shrink-0">
+                        <div class="bg-warning rounded-circle p-3">
+                            <i class="fas fa-headset text-dark fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h4>24/7 Concierge</h4>
+                        <p class="text-muted">Our dedicated concierge team is available around the clock.</p>
+                    </div>
+                </div>
+                <a href="/register" class="btn btn-luxury btn-lg mt-3">Join Luxury Club</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
     <div class="container text-center">
-        <p>&copy; 2024 Hotel Booking System. All rights reserved.</p>
+        <h2 class="newsletter-title" data-aos="fade-up">Join Our Luxury Club</h2>
+        <p class="mb-4" data-aos="fade-up" data-aos-delay="100">Subscribe to receive exclusive offers and updates</p>
+
+        <div class="newsletter-form" data-aos="fade-up" data-aos-delay="200">
+            <form id="newsletterForm" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');">
+                <input type="email" class="form-control" placeholder="Enter your email address" required>
+                <button type="submit" class="btn">Subscribe</button>
+            </form>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="text-white">
+                    <div class="display-4 fw-bold">500+</div>
+                    <p>Luxury Hotels</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="text-white">
+                    <div class="display-4 fw-bold">50k+</div>
+                    <p>Happy Guests</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="text-white">
+                    <div class="display-4 fw-bold">100+</div>
+                    <p>Destinations</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="text-white">
+                    <div class="display-4 fw-bold">24/7</div>
+                    <p>Support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer" id="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <h3 class="footer-title">LUXURY STAYS</h3>
+                <p class="text-muted mb-4">Experience the epitome of luxury and comfort at the world's finest hotels. Your extraordinary journey begins here.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 mb-4">
+                <h5 class="text-white mb-4">Quick Links</h5>
+                <ul class="footer-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/hotels">Hotels</a></li>
+                    <li><a href="#offers">Offers</a></li>
+                    <li><a href="#destinations">Destinations</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-4 mb-4">
+                <h5 class="text-white mb-4">Support</h5>
+                <ul class="footer-links">
+                    <li><a href="/help">Help Center</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                    <li><a href="/terms">Terms of Service</a></li>
+                    <li><a href="/cancellation">Cancellation</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4 col-md-4 mb-4">
+                <h5 class="text-white mb-4">Contact Us</h5>
+                <ul class="footer-links">
+                    <li><i class="fas fa-phone me-2 text-warning"></i> +1 234 567 8900</li>
+                    <li><i class="fas fa-envelope me-2 text-warning"></i> concierge@luxurystays.com</li>
+                    <li><i class="fas fa-map-marker-alt me-2 text-warning"></i> 123 Luxury Avenue, NY 10001</li>
+                </ul>
+
+                <div class="mt-4">
+                    <h6 class="text-white mb-3">Download Our App</h6>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-dark">
+                            <i class="fab fa-apple"></i> App Store
+                        </a>
+                        <a href="#" class="btn btn-dark">
+                            <i class="fab fa-google-play"></i> Google Play
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="mb-0">© 2024 LUXURY STAYS. All rights reserved. | A 7-Star Hotel Booking Experience</p>
+        </div>
     </div>
 </footer>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 100
+    });
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('mainNav');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Initialize Hero Slider
+    const heroSwiper = new Swiper('.heroSwiper', {
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        effect: 'fade',
+        fadeEffect: {
+            crossFade: true
+        }
+    });
+
+    // Initialize Testimonial Slider
+    const testimonialSwiper = new Swiper('.testimonialSwiper', {
+        loop: true,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        slidesPerView: 1,
+        spaceBetween: 30,
+        breakpoints: {
+            768: {
+                slidesPerView: 2,
+            },
+            1024: {
+                slidesPerView: 3,
+            }
+        }
+    });
+
+    // Search tabs functionality
+    document.querySelectorAll('.search-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            // Here you can add logic to change search form based on tab
+        });
+    });
+
+    // Set default dates
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const dayAfterTomorrow = new Date(today);
+        dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+
+        const checkInInput = document.querySelector('input[name="checkInDate"]');
+        const checkOutInput = document.querySelector('input[name="checkOutDate"]');
+
+        if (checkInInput && !checkInInput.value) {
+            checkInInput.value = tomorrow.toISOString().split('T')[0];
+        }
+
+        if (checkOutInput && !checkOutInput.value) {
+            checkOutInput.value = dayAfterTomorrow.toISOString().split('T')[0];
+        }
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add loading animation to search button
+    const searchForm = document.querySelector('.search-form');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function() {
+            const searchBtn = this.querySelector('.search-btn');
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            searchBtn.disabled = true;
+        });
+    }
+
+    // Parallax effect for hero section
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const heroContent = document.querySelector('.hero-content');
+        if (heroContent) {
+            heroContent.style.transform = `translate(-50%, calc(-50% + ${scrolled * 0.3}px))`;
+        }
+    });
+
+    // Interactive floating elements
+    document.querySelectorAll('.floating-icon').forEach((icon, index) => {
+        icon.style.animationDelay = `${index * 2}s`;
+    });
+
+    // Newsletter form validation
+    const newsletterForm = document.getElementById('newsletterForm');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            if (email && email.includes('@')) {
+                alert('Thank you for subscribing to our luxury club!');
+                this.reset();
+            } else {
+                alert('Please enter a valid email address');
+            }
+        });
+    }
+
+    // Lazy loading images
+    const images = document.querySelectorAll('img[data-src]');
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.add('loaded');
+                observer.unobserve(img);
+            }
+        });
+    });
+
+    images.forEach(img => imageObserver.observe(img));
+
+    // Add dynamic year to copyright
+    document.querySelector('.footer-bottom p').innerHTML =
+        document.querySelector('.footer-bottom p').innerHTML.replace('2024', new Date().getFullYear());
+</script>
 </body>
 </html>

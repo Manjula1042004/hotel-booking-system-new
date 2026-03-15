@@ -31,6 +31,50 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
+    // Account security fields
+    @Column(name = "account_non_expired", nullable = false)
+    private Boolean accountNonExpired = true;
+
+    @Column(name = "account_non_locked", nullable = false)
+    private Boolean accountNonLocked = true;
+
+    @Column(name = "credentials_non_expired", nullable = false)
+    private Boolean credentialsNonExpired = true;
+
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = true;
+
+    // New fields from your database
+    @Column(name = "email_verified", nullable = false)
+    private Boolean emailVerified = false;
+
+    @Column(name = "email_verified_at")
+    private LocalDateTime emailVerifiedAt;
+
+    @Column(name = "failed_login_attempts")
+    private Integer failedLoginAttempts = 0;
+
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+
+    @Column(name = "lockout_time")
+    private LocalDateTime lockoutTime;
+
+    @Column(name = "password_changed_at")
+    private LocalDateTime passwordChangedAt;
+
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
+    @Column(name = "provider", nullable = false)
+    private String provider = "LOCAL";
+
+    @Column(name = "provider_id")
+    private String providerId;
+
+    @Column(name = "two_factor_enabled", nullable = false)
+    private Boolean twoFactorEnabled = false;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -53,6 +97,48 @@ public class User {
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
 
+    public Boolean isAccountNonExpired() { return accountNonExpired; }
+    public void setAccountNonExpired(Boolean accountNonExpired) { this.accountNonExpired = accountNonExpired; }
+
+    public Boolean isAccountNonLocked() { return accountNonLocked; }
+    public void setAccountNonLocked(Boolean accountNonLocked) { this.accountNonLocked = accountNonLocked; }
+
+    public Boolean isCredentialsNonExpired() { return credentialsNonExpired; }
+    public void setCredentialsNonExpired(Boolean credentialsNonExpired) { this.credentialsNonExpired = credentialsNonExpired; }
+
+    public Boolean isEnabled() { return enabled; }
+    public void setEnabled(Boolean enabled) { this.enabled = enabled; }
+
+    public Boolean getEmailVerified() { return emailVerified; }
+    public void setEmailVerified(Boolean emailVerified) { this.emailVerified = emailVerified; }
+
+    public LocalDateTime getEmailVerifiedAt() { return emailVerifiedAt; }
+    public void setEmailVerifiedAt(LocalDateTime emailVerifiedAt) { this.emailVerifiedAt = emailVerifiedAt; }
+
+    public Integer getFailedLoginAttempts() { return failedLoginAttempts; }
+    public void setFailedLoginAttempts(Integer failedLoginAttempts) { this.failedLoginAttempts = failedLoginAttempts; }
+
+    public LocalDateTime getLastLoginAt() { return lastLoginAt; }
+    public void setLastLoginAt(LocalDateTime lastLoginAt) { this.lastLoginAt = lastLoginAt; }
+
+    public LocalDateTime getLockoutTime() { return lockoutTime; }
+    public void setLockoutTime(LocalDateTime lockoutTime) { this.lockoutTime = lockoutTime; }
+
+    public LocalDateTime getPasswordChangedAt() { return passwordChangedAt; }
+    public void setPasswordChangedAt(LocalDateTime passwordChangedAt) { this.passwordChangedAt = passwordChangedAt; }
+
+    public String getProfileImageUrl() { return profileImageUrl; }
+    public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
+
+    public String getProvider() { return provider; }
+    public void setProvider(String provider) { this.provider = provider; }
+
+    public String getProviderId() { return providerId; }
+    public void setProviderId(String providerId) { this.providerId = providerId; }
+
+    public Boolean getTwoFactorEnabled() { return twoFactorEnabled; }
+    public void setTwoFactorEnabled(Boolean twoFactorEnabled) { this.twoFactorEnabled = twoFactorEnabled; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
@@ -66,6 +152,16 @@ public class User {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+
+        // Set all required fields with default values
+        if (accountNonExpired == null) accountNonExpired = true;
+        if (accountNonLocked == null) accountNonLocked = true;
+        if (credentialsNonExpired == null) credentialsNonExpired = true;
+        if (enabled == null) enabled = true;
+        if (emailVerified == null) emailVerified = false;
+        if (failedLoginAttempts == null) failedLoginAttempts = 0;
+        if (provider == null) provider = "LOCAL";
+        if (twoFactorEnabled == null) twoFactorEnabled = false;
     }
 
     @PreUpdate

@@ -17,12 +17,18 @@ public class UserController {
 
     @GetMapping("/dashboard")
     public String userDashboard(Model model, Principal principal) {
-        String email = principal.getName();
-        User user = userService.getUserByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            String email = principal.getName();
+            User user = userService.getUserByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        model.addAttribute("user", user);
-        return "user/dashboard";
+            model.addAttribute("user", user);
+            System.out.println("User dashboard loaded for: " + email);
+            return "user/dashboard";
+        } catch (Exception e) {
+            System.err.println("Error loading user dashboard: " + e.getMessage());
+            return "redirect:/?error";
+        }
     }
 
     @GetMapping("/profile")

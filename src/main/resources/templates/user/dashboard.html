@@ -31,11 +31,11 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                         <span th:text="${user.name}">User</span>
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <form th:action="@{/logout}" method="post" class="d-inline">
+                            <form th:action="@{/logout}" method="post">
                                 <button type="submit" class="dropdown-item">Logout</button>
                             </form>
                         </li>
@@ -49,68 +49,150 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8">
-            <h2>Welcome back, <span th:text="${user.name}"></span>!</h2>
+            <h2>Welcome back, <span th:text="${user.name}">User</span>!</h2>
             <p class="text-muted">Ready for your next adventure?</p>
         </div>
     </div>
 
+    <!-- Quick Actions -->
     <div class="row mt-4">
         <div class="col-md-4 mb-4">
-            <div class="card bg-primary text-white">
+            <div class="card bg-primary text-white h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Find Hotels</h5>
-                    <p class="card-text">Discover amazing places to stay</p>
-                    <a href="/hotels" class="btn btn-light">Explore</a>
+                    <h5 class="card-title"><i class="fas fa-hotel"></i> Find Hotels</h5>
+                    <p class="card-text">Discover amazing places to stay around the world</p>
+                    <a href="/hotels" class="btn btn-light">Browse Hotels</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-4">
-            <div class="card bg-success text-white">
+            <div class="card bg-success text-white h-100">
                 <div class="card-body">
-                    <h5 class="card-title">My Bookings</h5>
-                    <p class="card-text">View your upcoming stays</p>
+                    <h5 class="card-title"><i class="fas fa-calendar-check"></i> My Bookings</h5>
+                    <p class="card-text">View and manage your upcoming stays</p>
                     <a href="/bookings/my-bookings" class="btn btn-light">View Bookings</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-4">
-            <div class="card bg-info text-white">
+            <div class="card bg-info text-white h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Profile</h5>
-                    <p class="card-text">Manage your account</p>
+                    <h5 class="card-title"><i class="fas fa-user"></i> Profile</h5>
+                    <p class="card-text">Update your personal information</p>
                     <a href="/user/profile" class="btn btn-light">Edit Profile</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-4">
+    <!-- Quick Search -->
+    <div class="row mt-2">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h5>Quick Search</h5>
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="fas fa-search"></i> Quick Hotel Search</h5>
                 </div>
                 <div class="card-body">
                     <form th:action="@{/search}" method="get" class="row g-3">
                         <div class="col-md-4">
-                            <input type="text" name="city" class="form-control" placeholder="Where are you going?" required>
+                            <label class="form-label">Destination</label>
+                            <input type="text" name="city" class="form-control" placeholder="Enter city name" required>
                         </div>
                         <div class="col-md-3">
-                            <input type="date" name="checkInDate" class="form-control" required>
+                            <label class="form-label">Check-in</label>
+                            <input type="date" name="checkInDate" class="form-control"
+                                   th:min="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}" required>
                         </div>
                         <div class="col-md-3">
+                            <label class="form-label">Check-out</label>
                             <input type="date" name="checkOutDate" class="form-control" required>
                         </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Search
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Popular Destinations -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3>Popular Destinations</h3>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="card destination-card">
+                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=300&h=200&fit=crop"
+                             class="card-img-top" alt="New York" style="height: 150px; object-fit: cover;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">New York</h5>
+                            <a href="/hotels/search?city=New York" class="btn btn-outline-primary btn-sm">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card destination-card">
+                        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=300&h=200&fit=crop"
+                             class="card-img-top" alt="Paris" style="height: 150px; object-fit: cover;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Paris</h5>
+                            <a href="/hotels/search?city=Paris" class="btn btn-outline-primary btn-sm">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card destination-card">
+                        <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=300&h=200&fit=crop"
+                             class="card-img-top" alt="London" style="height: 150px; object-fit: cover;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">London</h5>
+                            <a href="/hotels/search?city=London" class="btn btn-outline-primary btn-sm">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card destination-card">
+                        <img src="https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=300&h=200&fit=crop"
+                             class="card-img-top" alt="Tokyo" style="height: 150px; object-fit: cover;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Tokyo</h5>
+                            <a href="/hotels/search?city=Tokyo" class="btn btn-outline-primary btn-sm">Explore</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Set default dates
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const dayAfter = new Date(today);
+        dayAfter.setDate(dayAfter.getDate() + 2);
+
+        const checkInInput = document.querySelector('input[name="checkInDate"]');
+        const checkOutInput = document.querySelector('input[name="checkOutDate"]');
+
+        if (checkInInput && !checkInInput.value) {
+            checkInInput.value = tomorrow.toISOString().split('T')[0];
+        }
+
+        if (checkOutInput && !checkOutInput.value) {
+            checkOutInput.value = dayAfter.toISOString().split('T')[0];
+        }
+    });
+</script>
 </body>
 </html>
