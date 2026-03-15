@@ -22,10 +22,11 @@ public class MainController {
         return "login";
     }
 
-    @GetMapping("/register")
-    public String register() {
-        return "register";
-    }
+    // ❌ REMOVE THIS METHOD - It's duplicate!
+    // @GetMapping("/register")
+    // public String register() {
+    //     return "register";
+    // }
 
     @GetMapping("/access-denied")
     public String accessDenied() {
@@ -59,17 +60,5 @@ public class MainController {
     @ResponseBody
     public String health() {
         return "OK";
-    }
-
-    @GetMapping("/debug")
-    @ResponseBody
-    public Map<String, Object> debug() {
-        Map<String, Object> info = new HashMap<>();
-        info.put("status", "running");
-        info.put("time", LocalDateTime.now().toString());
-        info.put("port", System.getProperty("server.port"));
-        info.put("profile", System.getProperty("spring.profiles.active"));
-        info.put("db_url", System.getenv("DATABASE_URL") != null ? "set" : "not set");
-        return info;
     }
 }
