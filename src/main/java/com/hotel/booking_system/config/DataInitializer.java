@@ -32,18 +32,9 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("🎯 ===== DATA INITIALIZER STARTED =====");
-
-        // Create Admin User with ADMIN role
         createAdminUser();
-
-        // Create Sample Hotels and Rooms
         createSampleHotels();
-
         System.out.println("🎯 ===== DATA INITIALIZER COMPLETED =====");
-        System.out.println("✅ Application is ready! Access URLs:");
-        System.out.println("📍 Homepage: http://localhost:8080");
-        System.out.println("📍 Admin Login: http://localhost:8080/login (admin@hotel.com / admin123) - Redirects to Admin Dashboard");
-        System.out.println("📍 User Registration: http://localhost:8080/register - Redirects to User Dashboard");
     }
 
     private void createAdminUser() {
@@ -56,7 +47,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setRole(User.Role.ADMIN);
 
-            // Set all required fields for PostgreSQL
+            // Set all required fields with default values
             admin.setAccountNonExpired(true);
             admin.setAccountNonLocked(true);
             admin.setCredentialsNonExpired(true);
@@ -75,22 +66,6 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("   👑 Role: ADMIN");
         } else {
             System.out.println("✅ Admin user already exists");
-            User admin = userRepository.findByEmail("admin@hotel.com").get();
-            admin.setRole(User.Role.ADMIN);
-
-            // ⚠️ USE THE CORRECT GETTER METHODS (with 'is' prefix) ⚠️
-            if (admin.isAccountNonExpired() == null) admin.setAccountNonExpired(true);
-            if (admin.isAccountNonLocked() == null) admin.setAccountNonLocked(true);
-            if (admin.isCredentialsNonExpired() == null) admin.setCredentialsNonExpired(true);
-            if (admin.isEnabled() == null) admin.setEnabled(true);
-            if (admin.getEmailVerified() == null) admin.setEmailVerified(false);
-            if (admin.getFailedLoginAttempts() == null) admin.setFailedLoginAttempts(0);
-            if (admin.getProvider() == null) admin.setProvider("LOCAL");
-            if (admin.getTwoFactorEnabled() == null) admin.setTwoFactorEnabled(false);
-
-            admin.setUpdatedAt(LocalDateTime.now());
-            userRepository.save(admin);
-            System.out.println("✅ Admin user updated with required fields");
         }
     }
 
@@ -103,7 +78,7 @@ public class DataInitializer implements CommandLineRunner {
             grandPlaza.setName("Grand Plaza Hotel");
             grandPlaza.setCity("New York");
             grandPlaza.setAddress("123 Broadway, Manhattan, NY 10001");
-            grandPlaza.setDescription("Experience luxury in the heart of Manhattan with stunning city views and world-class amenities.");
+            grandPlaza.setDescription("Experience luxury in the heart of Manhattan with stunning city views.");
             grandPlaza.setRating(4.8);
             grandPlaza.setImageUrl("https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500");
             grandPlaza.setCreatedAt(LocalDateTime.now());
@@ -120,7 +95,7 @@ public class DataInitializer implements CommandLineRunner {
             parisLuxury.setName("Paris Luxury Suites");
             parisLuxury.setCity("Paris");
             parisLuxury.setAddress("456 Champs-Élysées, 75008 Paris");
-            parisLuxury.setDescription("Elegant suites with Eiffel Tower views in the most romantic city in the world.");
+            parisLuxury.setDescription("Elegant suites with Eiffel Tower views in the most romantic city.");
             parisLuxury.setRating(4.9);
             parisLuxury.setImageUrl("https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=500");
             parisLuxury.setCreatedAt(LocalDateTime.now());
@@ -132,30 +107,14 @@ public class DataInitializer implements CommandLineRunner {
             createRoom(parisLuxury, "202", "Deluxe King", new BigDecimal("399.99"), 2, 4);
             createRoom(parisLuxury, "203", "Family Suite", new BigDecimal("699.99"), 4, 2);
 
-            // Create Royal Palm Hotel
-            Hotel royalPalm = new Hotel();
-            royalPalm.setName("Royal Palm Hotel");
-            royalPalm.setCity("Dubai");
-            royalPalm.setAddress("789 Sheikh Zayed Road, Dubai");
-            royalPalm.setDescription("Ultra-luxury hotel with private beach access and infinity pool overlooking the Arabian Gulf.");
-            royalPalm.setRating(5.0);
-            royalPalm.setImageUrl("https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=500");
-            royalPalm.setCreatedAt(LocalDateTime.now());
-            royalPalm.setUpdatedAt(LocalDateTime.now());
-            hotelRepository.save(royalPalm);
-
-            // Create rooms for Royal Palm
-            createRoom(royalPalm, "301", "Ocean View Suite", new BigDecimal("899.99"), 2, 3);
-            createRoom(royalPalm, "302", "Presidential Suite", new BigDecimal("1499.99"), 4, 1);
-            createRoom(royalPalm, "303", "Deluxe King", new BigDecimal("699.99"), 2, 5);
-
             System.out.println("✅ Sample hotels and rooms created successfully!");
         } else {
             System.out.println("✅ Sample hotels already exist");
         }
     }
 
-    private void createRoom(Hotel hotel, String roomNumber, String roomType, BigDecimal price, int capacity, int totalRooms) {
+    private void createRoom(Hotel hotel, String roomNumber, String roomType,
+                            BigDecimal price, int capacity, int totalRooms) {
         Room room = new Room();
         room.setHotel(hotel);
         room.setRoomNumber(roomNumber);
@@ -164,8 +123,8 @@ public class DataInitializer implements CommandLineRunner {
         room.setCapacity(capacity);
         room.setTotalRooms(totalRooms);
         room.setAvailable(true);
-        room.setDescription("Beautiful " + roomType + " with modern amenities and stunning views.");
-        room.setAmenities("Free WiFi, TV, Air Conditioning, Mini Bar, Room Service");
+        room.setDescription("Beautiful " + roomType + " with modern amenities.");
+        room.setAmenities("Free WiFi, TV, Air Conditioning, Mini Bar");
         room.setCreatedAt(LocalDateTime.now());
         room.setUpdatedAt(LocalDateTime.now());
         roomRepository.save(room);
