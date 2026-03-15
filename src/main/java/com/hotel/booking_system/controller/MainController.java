@@ -22,7 +22,7 @@ public class MainController {
         return "login";
     }
 
-    // ❌ REMOVE THIS METHOD - It's duplicate!
+    // ❌ REMOVE THIS ENTIRE METHOD
     // @GetMapping("/register")
     // public String register() {
     //     return "register";
